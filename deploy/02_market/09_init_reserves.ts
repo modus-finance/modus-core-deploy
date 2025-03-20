@@ -19,6 +19,7 @@ import {
   POOL_DATA_PROVIDER,
 } from "../../helpers/deploy-ids";
 import { MARKET_NAME } from "../../helpers/env";
+import { verify } from "../../helpers/verify";
 
 const func: DeployFunction = async function ({
   getNamedAccounts,
@@ -62,12 +63,13 @@ const func: DeployFunction = async function ({
       strategyData.stableRateExcessOffset,
       strategyData.optimalStableToTotalDebtRatio,
     ];
-    await deployments.deploy(`ReserveStrategy-${strategyData.name}`, {
+    const reserveInterestRateStrategy = await deployments.deploy(`ReserveStrategy-${strategyData.name}`, {
       from: deployer,
       args: args,
       contract: "DefaultReserveInterestRateStrategy",
       log: true,
     });
+    await verify(reserveInterestRateStrategy.address, args, hre.network.name);
   }
 
   // Deploy Reserves ATokens

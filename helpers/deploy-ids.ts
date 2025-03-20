@@ -30,6 +30,7 @@ export const AAVE_COLLECTOR_IMPL_ID = `AaveCollector-${IMPL_ID}-${MARKET_NAME}`;
 export const TESTNET_TOKEN_PREFIX = `-TestnetMintableERC20-${MARKET_NAME}`;
 export const TESTNET_REWARD_TOKEN_PREFIX = `-TestnetMintableERC20-Reward-${MARKET_NAME}`;
 export const TESTNET_PRICE_AGGR_PREFIX = `-TestnetPriceAggregator-${MARKET_NAME}`;
+export const TESTNET_PRICE_PYTH_PREFIX = `TestnetPricePyth-${MARKET_NAME}`;
 export const ATOKEN_PREFIX = `-AToken-${MARKET_NAME}`;
 export const VARIABLE_DEBT_PREFIX = `-VariableDebtToken-${MARKET_NAME}`;
 export const STABLE_DEBT_PREFIX = `-StableDebtToken-${MARKET_NAME}`;

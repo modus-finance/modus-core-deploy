@@ -28,7 +28,7 @@ import {
   Pool,
   PoolAddressesProvider,
   PoolAddressesProviderRegistry,
-  PoolConfigurator,
+  PoolConfigurator
 } from "../typechain";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { MARKET_NAME } from "./env";
@@ -189,11 +189,11 @@ export const initReservesByHelper = async (
       treasury: treasuryAddress,
       incentivesController,
       underlyingAssetName: reserveSymbols[i],
-      aTokenName: `Aave ${aTokenNamePrefix} ${reserveSymbols[i]}`,
+      aTokenName: `${aTokenNamePrefix} ${reserveSymbols[i]}`,
       aTokenSymbol: `a${symbolPrefix}${reserveSymbols[i]}`,
-      variableDebtTokenName: `Aave ${variableDebtTokenNamePrefix} Variable Debt ${reserveSymbols[i]}`,
+      variableDebtTokenName: `${variableDebtTokenNamePrefix} Variable Debt ${reserveSymbols[i]}`,
       variableDebtTokenSymbol: `variableDebt${symbolPrefix}${reserveSymbols[i]}`,
-      stableDebtTokenName: `Aave ${stableDebtTokenNamePrefix} Stable Debt ${reserveSymbols[i]}`,
+      stableDebtTokenName: `${stableDebtTokenNamePrefix} Stable Debt ${reserveSymbols[i]}`,
       stableDebtTokenSymbol: `stableDebt${symbolPrefix}${reserveSymbols[i]}`,
       params: "0x10",
     });

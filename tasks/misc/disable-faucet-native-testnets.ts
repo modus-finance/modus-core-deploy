@@ -34,16 +34,18 @@ task(
   const poolConfiguratorProxyContract = await getPoolConfiguratorProxy();
 
   console.log(
-    `Update reserve for asset ${wrappedTokenAddress} to setReserveBorrowing to false`
+    `Update reserve for asset ${wrappedTokenAddress} to setReserveBorrowing to false, only hardhat`
   );
 
-  await waitForTx(
-    await poolConfiguratorProxyContract
-      .connect(signer)
-      .setReserveBorrowing(wrappedTokenAddress, false)
-  );
+  if(hre.network.name === "hardhat") {
+    await waitForTx(
+      await poolConfiguratorProxyContract
+        .connect(signer)
+        .setReserveBorrowing(wrappedTokenAddress, false)
+    );
+  }
 
   console.log(
-    `Successfully updated reserve for asset ${wrappedTokenAddress} to setReserveBorrowing to false`
+    `Successfully updated reserve for asset ${wrappedTokenAddress} to setReserveBorrowing to false, only hardhat`
   );
 });

@@ -5,7 +5,9 @@ import {
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
 import { MARKET_NAME } from "../helpers/env";
-import { getPoolConfiguratorProxy, waitForTx } from "../helpers";
+import { getPoolConfiguratorProxy, waitForTx, getAaveOracle, 
+  getMintableERC20, getMockAggregator, TESTNET_PRICE_AGGR_PREFIX, 
+  TESTNET_TOKEN_PREFIX, ATOKEN_PREFIX} from "../helpers";
 
 /**
  * The following script runs after the deployment starts
@@ -46,6 +48,22 @@ const func: DeployFunction = async function ({
     const poolConfigurator = await getPoolConfiguratorProxy();
     await waitForTx(await poolConfigurator.setPoolPause(false));
     console.log("- Pool unpaused and accepting deposits.");
+
+    const aaveOracle = await getAaveOracle();
+    const daiToken = await getMintableERC20((await deployments.get(`DAI${TESTNET_TOKEN_PREFIX}`)).address);
+    const daiAggregator = await getMockAggregator((await deployments.get(`DAI${TESTNET_PRICE_AGGR_PREFIX}`)).address);
+    const nativeToken = await getMintableERC20((await deployments.get(`${poolConfig.WrappedNativeTokenSymbol}${TESTNET_TOKEN_PREFIX}`)).address);
+    const daiAToken = await getMintableERC20((await deployments.get(`DAI${ATOKEN_PREFIX}`)).address);
+    const decimal = await daiAToken.decimals();
+    console.log("daiAToken decimal:",decimal);
+
+    console.log("dai price",daiToken.address);
+    console.log("aaveOracle address", aaveOracle.address)
+    console.log("dai price before",await aaveOracle.getAssetPrice(daiToken.address));
+    console.log("native token  price",await aaveOracle.getAssetPrice(nativeToken.address));
+    // await daiAggregator.updatePrice("130000000");
+    // console.log("dai price after",await aaveOracle.getAssetPrice(daiToken.address));
+
   }
 
   if (process.env.TRANSFER_OWNERSHIP === "true") {

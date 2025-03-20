@@ -28,6 +28,7 @@ import {
   waitForTx,
 } from "../../helpers";
 import { MARKET_NAME } from "../../helpers/env";
+import { verify } from "../../helpers/verify";
 
 /**
  * @notice An incentives proxy can be deployed per network or per market.
@@ -68,6 +69,7 @@ const func: DeployFunction = async function ({
     args: [deployer],
     ...COMMON_DEPLOY_PARAMS,
   });
+  await verify(emissionManagerArtifact.address,[deployer], hre.network.name)
   const emissionManager = (await hre.ethers.getContractAt(
     emissionManagerArtifact.abi,
     emissionManagerArtifact.address
@@ -80,6 +82,7 @@ const func: DeployFunction = async function ({
     args: [emissionManagerArtifact.address],
     ...COMMON_DEPLOY_PARAMS,
   });
+  await verify(incentivesImplArtifact.address,[emissionManagerArtifact.address], hre.network.name)
   const incentivesImpl = (await hre.ethers.getContractAt(
     incentivesImplArtifact.abi,
     incentivesImplArtifact.address
@@ -129,38 +132,21 @@ const func: DeployFunction = async function ({
     await emissionManager.setRewardsController(rewardsProxyAddress)
   );
 
-  if (!isLive) {
-    await deploy(INCENTIVES_PULL_REWARDS_STRATEGY_ID, {
-      from: deployer,
-      contract: "PullRewardsTransferStrategy",
-      args: [
-        rewardsProxyAddress,
-        incentivesEmissionManager,
-        incentivesRewardsVault,
-      ],
-      ...COMMON_DEPLOY_PARAMS,
-    });
-    const stakedAaveAddress = isLive
-      ? getParamPerNetwork(poolConfig.StkAaveProxy, network)
-      : (await deployments.getOrNull(STAKE_AAVE_PROXY))?.address;
-
-    if (stakedAaveAddress) {
-      await deploy(INCENTIVES_STAKED_TOKEN_STRATEGY_ID, {
-        from: deployer,
-        contract: "StakedTokenTransferStrategy",
-        args: [
-          rewardsProxyAddress,
-          incentivesEmissionManager,
-          stakedAaveAddress,
-        ],
-        ...COMMON_DEPLOY_PARAMS,
-      });
-    } else {
-      console.log(
-        "[WARNING] Missing StkAave address. Skipping StakedTokenTransferStrategy deployment."
-      );
-    }
-  }
+  const PullRewardsTransferStrategy = await deploy(INCENTIVES_PULL_REWARDS_STRATEGY_ID, {
+    from: deployer,
+    contract: "PullRewardsTransferStrategy",
+    args: [
+      rewardsProxyAddress,
+      incentivesEmissionManager,
+      incentivesRewardsVault,
+    ],
+    ...COMMON_DEPLOY_PARAMS,
+  });
+  await verify(
+    PullRewardsTransferStrategy.address,
+    [rewardsProxyAddress, incentivesEmissionManager, incentivesRewardsVault],
+     hre.network.name
+    )
 
   // Transfer emission manager ownership
 

@@ -27,6 +27,7 @@ task(`setup-e-modes`, `Setups e-modes from config`).setAction(
       if (eMode.oracleId) {
         oracle = await getOracleByAsset(config, eMode.oracleId);
       }
+      console.log("modes-oracle", oracle);
 
       await waitForTx(
         await poolConfigurator.setEModeCategory(

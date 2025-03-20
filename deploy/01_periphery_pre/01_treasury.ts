@@ -28,6 +28,7 @@ import {
   InitializableAdminUpgradeabilityProxy__factory,
 } from "../../typechain";
 import { getAddress } from "ethers/lib/utils";
+import { verify } from "../../helpers/verify";
 
 /**
  * @notice A treasury proxy can be deployed per network or per market.
@@ -64,15 +65,15 @@ const func: DeployFunction = async function ({
 
     await save(TREASURY_PROXY_ID, {
       address: treasuryAddress,
-      abi: InitializableAdminUpgradeabilityProxy__factory.abi,
+      abi: InitializableAdminUpgradeabilityProxy__factory.abi as any,
     });
     await save(TREASURY_CONTROLLER_ID, {
       address: controller,
-      abi: AaveEcosystemReserveController__factory.abi,
+      abi: AaveEcosystemReserveController__factory.abi as any,
     });
     await save(TREASURY_IMPL_ID, {
       address: impl,
-      abi: AaveEcosystemReserveV2__factory.abi,
+      abi: AaveEcosystemReserveV2__factory.abi as any,
     });
 
     return true;
@@ -84,6 +85,7 @@ const func: DeployFunction = async function ({
     contract: "InitializableAdminUpgradeabilityProxy",
     args: [],
   });
+  await verify(treasuryProxyArtifact.address, [], hre.network.name);
 
   // Deploy Treasury Controller
   const treasuryController = await deploy(TREASURY_CONTROLLER_ID, {
@@ -92,6 +94,9 @@ const func: DeployFunction = async function ({
     args: [treasuryOwner],
     ...COMMON_DEPLOY_PARAMS,
   });
+  console.log("Treasury Controller arg", treasuryOwner);
+  await verify(treasuryController.address, [treasuryOwner], hre.network.name);
+
 
   // Deploy Treasury implementation and initialize proxy
   const treasuryImplArtifact = await deploy(TREASURY_IMPL_ID, {
@@ -100,6 +105,8 @@ const func: DeployFunction = async function ({
     args: [],
     ...COMMON_DEPLOY_PARAMS,
   });
+  await verify(treasuryImplArtifact.address, [], hre.network.name);
+
 
   const treasuryImpl = (await hre.ethers.getContractAt(
     treasuryImplArtifact.abi,

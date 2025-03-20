@@ -15,10 +15,11 @@ import {
   checkRequiredEnvironment,
   getReserveAddresses,
 } from "../../helpers/market-config-helpers";
-import { eNetwork, ICommonConfiguration, SymbolMap } from "../../helpers/types";
+import { eNetwork, ICommonConfiguration } from "../../helpers/types";
 import { getPairsTokenAggregator } from "../../helpers/init-helpers";
 import { parseUnits } from "ethers/lib/utils";
 import { MARKET_NAME } from "../../helpers/env";
+import { verify } from "../../helpers/verify";
 
 const func: DeployFunction = async function ({
   getNamedAccounts,
@@ -47,9 +48,11 @@ const func: DeployFunction = async function ({
     reserveAssets,
     chainlinkAggregators
   );
+  console.log("assets", assets);
+  console.log("sources", sources);
 
   // Deploy AaveOracle
-  await deploy(ORACLE_ID, {
+  const oracle = await deploy(ORACLE_ID, {
     from: deployer,
     args: [
       addressesProviderAddress,
@@ -62,6 +65,14 @@ const func: DeployFunction = async function ({
     ...COMMON_DEPLOY_PARAMS,
     contract: "AaveOracle",
   });
+  await verify(oracle.address,[
+    addressesProviderAddress,
+    assets,
+    sources,
+    fallbackOracleAddress,
+    ZERO_ADDRESS,
+    parseUnits("1", OracleQuoteUnit),
+  ], hre.network.name)
 
   return true;
 };

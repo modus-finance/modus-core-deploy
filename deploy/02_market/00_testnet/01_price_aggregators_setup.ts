@@ -21,6 +21,7 @@ import {
 } from "../../../helpers/constants";
 import Bluebird from "bluebird";
 import { MARKET_NAME } from "../../../helpers/env";
+import { verify } from "../../../helpers/verify";
 
 const func: DeployFunction = async function ({
   getNamedAccounts,
@@ -57,12 +58,13 @@ const func: DeployFunction = async function ({
     if (!price) {
       throw `[ERROR] Missing mock price for asset ${symbol} at MOCK_CHAINLINK_AGGREGATORS_PRICES constant located at src/constants.ts`;
     }
-    await deploy(`${symbol}${TESTNET_PRICE_AGGR_PREFIX}`, {
+    const aggregators = await deploy(`${symbol}${TESTNET_PRICE_AGGR_PREFIX}`, {
       args: [price],
       from: deployer,
       ...COMMON_DEPLOY_PARAMS,
       contract: "MockAggregator",
     });
+    await verify(aggregators.address, [price], hre.network.name);
   });
 
   return true;

@@ -8,19 +8,20 @@ import {
   eHarmonyNetwork,
   eOptimismNetwork,
   ePolygonNetwork,
+  eMonadNetwork,
 } from "./types";
 
 const {
   version: coreVersion,
 }: {
   version: string;
-} = require("@aave/core-v3/package.json");
+} = require("@modus-finance/core-v3/package.json");
 const {
   version: peripheryVersion,
 }: {
   _resolved: string;
   version: string;
-} = require("@aave/periphery-v3/package.json");
+} = require("@modus-finance/periphery-v3/package.json");
 
 export const V3_CORE_VERSION = coreVersion;
 export const V3_PERIPHERY_VERSION = peripheryVersion;
@@ -33,6 +34,7 @@ export const MAX_UINT_AMOUNT =
   "115792089237316195423570985008687907853269984665640564039457584007913129639935";
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 export const ONE_ADDRESS = "0x0000000000000000000000000000000000000001";
+export const DEFAULT_PYTH_ID = "0x0000000000000000000000000000000000000000000000000000000000000000";
 export const AAVE_REFERRAL = "0";
 
 export const WRAPPED_NATIVE_TOKEN_PER_NETWORK: { [network: string]: string } = {
@@ -46,6 +48,7 @@ export const WRAPPED_NATIVE_TOKEN_PER_NETWORK: { [network: string]: string } = {
   [eFantomNetwork.main]: "0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83",
   [eHarmonyNetwork.main]: "0xcF664087a5bB0237a0BAd6742852ec6c8d69A27a",
   [ePolygonNetwork.polygon]: "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+  [eMonadNetwork.monad]: "0x1516000000000000000000000000000000000000", // todo change to native token
 };
 
 export const ZERO_BYTES_32 =
@@ -54,7 +57,11 @@ export const ZERO_BYTES_32 =
 export const MOCK_CHAINLINK_AGGREGATORS_PRICES: { [key: string]: string } = {
   AAVE: parseUnits("300", 8).toString(),
   WETH: parseUnits("4000", 8).toString(),
+  WIP: parseUnits("10", 8).toString(),
+  WMON: parseUnits("10", 8).toString(),
   ETH: parseUnits("4000", 8).toString(),
+  IP: parseUnits("10", 8).toString(),
+  MON: parseUnits("10", 8).toString(),
   DAI: parseUnits("1", 8).toString(),
   USDC: parseUnits("1", 8).toString(),
   USDT: parseUnits("1", 8).toString(),

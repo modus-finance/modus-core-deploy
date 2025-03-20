@@ -12,6 +12,7 @@ import {
   eFantomNetwork,
   eOptimismNetwork,
   eBaseNetwork,
+  eMonadNetwork,
 } from "./types";
 
 require("dotenv").config();
@@ -71,7 +72,7 @@ export const NETWORKS_RPC_URL: iParamsPerNetwork<string> = {
     ePolygonNetwork.polygon
   )}`,
   [eArbitrumNetwork.arbitrum]: `https://arb1.arbitrum.io/rpc`,
-  [eArbitrumNetwork.arbitrumTestnet]: `https://rinkeby.arbitrum.io/rpc`,
+  [eArbitrumNetwork.arbitrumTestnet]: `https://arbitrum-sepolia-rpc.publicnode.com`,
   [eEthereumNetwork.rinkeby]: `https://eth-rinkeby.alchemyapi.io/v2/${getAlchemyKey(
     eEthereumNetwork.rinkeby
   )}`,
@@ -98,6 +99,8 @@ export const NETWORKS_RPC_URL: iParamsPerNetwork<string> = {
   [eBaseNetwork.base]: `https://base-mainnet.g.alchemy.com/v2/${getAlchemyKey(
     eBaseNetwork.base
   )}`,
+  [eMonadNetwork.monadTestnet]: `https://testnet-rpc.monad.xyz`,
+  [eMonadNetwork.monad]: `https://testnet-rpc.monad.xyz`, // TODO: change to monad mainnet
 };
 
 export const LIVE_NETWORKS: iParamsPerNetwork<boolean> = {
@@ -109,6 +112,7 @@ export const LIVE_NETWORKS: iParamsPerNetwork<boolean> = {
   [eFantomNetwork.main]: true,
   [eOptimismNetwork.main]: true,
   [eBaseNetwork.base]: true,
+  [eMonadNetwork.monad]: true,
 };
 
 const GAS_PRICE_PER_NET: iParamsPerNetwork<string | number> = {

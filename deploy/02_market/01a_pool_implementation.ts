@@ -15,6 +15,7 @@ import {
   loadPoolConfig,
   waitForTx,
 } from "../../helpers";
+import { verify } from "../../helpers/verify";
 
 const func: DeployFunction = async function ({
   getNamedAccounts,
@@ -50,6 +51,7 @@ const func: DeployFunction = async function ({
     },
     ...COMMON_DEPLOY_PARAMS,
   });
+  await verify(poolArtifact.address, [addressesProviderAddress], hre.network.name);
 
   // Initialize implementation
   const pool = await getPool(poolArtifact.address);

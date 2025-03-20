@@ -26,6 +26,7 @@ import {
   MintableERC20,
   DefaultReserveInterestRateStrategy,
   MockFlashLoanReceiver,
+  MockAggregator,
   PoolAddressesProviderRegistry,
   ReservesSetupHelper,
   MockVariableDebtToken,
@@ -35,7 +36,7 @@ import {
   WrappedTokenGatewayV3,
   UiPoolDataProviderV3,
   WalletBalanceProvider,
-  UiIncentiveDataProviderV3,
+  UiIncentiveDataProviderV3
 } from "../typechain";
 import { tEthereumAddress } from "./types";
 import {
@@ -82,7 +83,7 @@ export const getERC20 = async (
   address: tEthereumAddress
 ): Promise<IERC20Detailed> =>
   getContract(
-    "@aave/core-v3/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol:IERC20Detailed",
+    "@modus-finance/core-v3/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol:IERC20Detailed",
     address
   );
 
@@ -147,6 +148,10 @@ export const getPriceOracle = async (
   address?: tEthereumAddress
 ): Promise<AaveOracle> => getContract("PriceOracle", address);
 
+export const getMockAggregator = async (
+  address?: tEthereumAddress
+): Promise<MockAggregator> => getContract("MockAggregator", address);
+
 export const getIRStrategy = async (
   address: tEthereumAddress
 ): Promise<DefaultReserveInterestRateStrategy> =>
@@ -160,7 +165,7 @@ export const getIErc20Detailed = async (
   address: tEthereumAddress
 ): Promise<IERC20Detailed> =>
   getContract(
-    "@aave/core-v3/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol:IERC20Detailed",
+    "@modus-finance/core-v3/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol:IERC20Detailed",
     address
   );
 

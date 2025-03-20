@@ -24,6 +24,7 @@ import {
   setupStkAave,
 } from "../../../helpers/contract-deployments";
 import { MARKET_NAME, PERMISSIONED_FAUCET } from "../../../helpers/env";
+import { verify } from "../../../helpers/verify";
 
 const func: DeployFunction = async function ({
   getNamedAccounts,
@@ -56,6 +57,7 @@ const func: DeployFunction = async function ({
     args: [deployer, PERMISSIONED_FAUCET, 10000], // 10000 whole tokens
     ...COMMON_DEPLOY_PARAMS,
   });
+  await verify(faucetOwnable.address, [deployer, PERMISSIONED_FAUCET, 10000], hre.network.name);
 
   console.log(
     `- Setting up testnet tokens for "${MARKET_NAME}" market at "${network}" network`
@@ -94,7 +96,7 @@ const func: DeployFunction = async function ({
       );
     } else {
       console.log("Deploy of TestnetERC20 contract", symbol);
-      await deploy(`${symbol}${TESTNET_TOKEN_PREFIX}`, {
+      const testtoken = await deploy(`${symbol}${TESTNET_TOKEN_PREFIX}`, {
         from: deployer,
         contract: "TestnetERC20",
         args: [
@@ -105,6 +107,12 @@ const func: DeployFunction = async function ({
         ],
         ...COMMON_DEPLOY_PARAMS,
       });
+      await verify(testtoken.address, [
+        symbol,
+        symbol,
+        reservesConfig[symbol].reserveDecimals,
+        faucetOwnable.address,
+      ], hre.network.name);
     }
   });
 
@@ -117,35 +125,38 @@ const func: DeployFunction = async function ({
 
     for (let y = 0; y < rewardSymbols.length; y++) {
       const reward = rewardSymbols[y];
-      await deploy(`${reward}${TESTNET_REWARD_TOKEN_PREFIX}`, {
+      const testtoken = await deploy(`${reward}${TESTNET_REWARD_TOKEN_PREFIX}`, {
         from: deployer,
         contract: "TestnetERC20",
         args: [reward, reward, 18, faucetOwnable.address],
         ...COMMON_DEPLOY_PARAMS,
       });
+      await verify(testtoken.address, [reward, reward, 18, faucetOwnable.address], hre.network.name);
     }
 
-    // 3. Deployment of Stake Aave
-    const COOLDOWN_SECONDS = "3600";
-    const UNSTAKE_WINDOW = "1800";
-    const aaveTokenArtifact = await deployments.get(
-      `AAVE${TESTNET_TOKEN_PREFIX}`
-    );
+    // 3. Deployment of Stake Aave need have aave token
+  //   if(hre.network.name === "hardhat") {
+  //     const COOLDOWN_SECONDS = "3600";
+  //     const UNSTAKE_WINDOW = "1800";
+  //     const aaveTokenArtifact = await deployments.get(
+  //       `AAVE${TESTNET_TOKEN_PREFIX}`
+  //     );
 
-    const stakeProxy = await deployInitializableAdminUpgradeabilityProxy(
-      STAKE_AAVE_PROXY
-    );
+  //     const stakeProxy = await deployInitializableAdminUpgradeabilityProxy(
+  //       STAKE_AAVE_PROXY
+  //     );
 
-    // Setup StkAave
-    await setupStkAave(stakeProxy, [
-      aaveTokenArtifact.address,
-      aaveTokenArtifact.address,
-      COOLDOWN_SECONDS,
-      UNSTAKE_WINDOW,
-      incentivesRewardsVault,
-      incentivesEmissionManager,
-      (1000 * 60 * 60).toString(),
-    ]);
+  //     // Setup StkAave
+  //     await setupStkAave(stakeProxy, [
+  //       aaveTokenArtifact.address,
+  //       aaveTokenArtifact.address,
+  //       COOLDOWN_SECONDS,
+  //       UNSTAKE_WINDOW,
+  //       incentivesRewardsVault,
+  //       incentivesEmissionManager,
+  //       (1000 * 60 * 60).toString(),
+  //     ]);
+  // }
 
     console.log("Testnet Reserve Tokens");
     console.log("======================");

@@ -21,6 +21,7 @@ import {
   isEqualAddress,
 } from "../../helpers/utilities/utils";
 import { COMMON_DEPLOY_PARAMS, MARKET_NAME } from "../../helpers/env";
+import { verify } from "../../helpers/verify";
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { getNamedAccounts, deployments } = hre;
@@ -67,6 +68,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     args: ["0", deployer],
     ...COMMON_DEPLOY_PARAMS,
   });
+  await verify(addressesProviderArtifact.address, ["0", deployer], hre.network.name);
   const signer = await hre.ethers.getSigner(deployer);
 
   const addressesProviderInstance = (
@@ -94,6 +96,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     args: [addressesProviderArtifact.address],
     ...COMMON_DEPLOY_PARAMS,
   });
+  await verify(protocolDataProvider.address, [addressesProviderArtifact.address], hre.network.name);
   const currentProtocolDataProvider =
     await addressesProviderInstance.getPoolDataProvider();
 

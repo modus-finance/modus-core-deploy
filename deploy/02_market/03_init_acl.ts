@@ -10,6 +10,7 @@ import {
   POOL_ADDRESSES_PROVIDER_ID,
 } from "../../helpers/deploy-ids";
 import { MARKET_NAME } from "../../helpers/env";
+import { verify } from "../../helpers/verify";
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { getNamedAccounts, deployments } = hre;
@@ -40,6 +41,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     args: [addressesProviderArtifact.address],
     ...COMMON_DEPLOY_PARAMS,
   });
+  await verify(aclManagerArtifact.address, [addressesProviderArtifact.address], hre.network.name);
 
   const aclManager = (
     await hre.ethers.getContractAt(

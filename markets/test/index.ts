@@ -3,7 +3,7 @@ import {
   rateStrategyStableTwo,
   rateStrategyVolatileOne,
 } from "./rateStrategies";
-import { ZERO_ADDRESS } from "../../helpers";
+import { ZERO_ADDRESS, DEFAULT_PYTH_ID } from "../../helpers/constants";
 import {
   IAaveConfiguration,
   eEthereumNetwork,

@@ -1,5 +1,5 @@
 import { parseUnits } from "ethers/lib/utils";
-import { ZERO_ADDRESS } from "../../helpers/constants";
+import { ZERO_ADDRESS,DEFAULT_PYTH_ID } from "../../helpers/constants";
 import {
   ICommonConfiguration,
   eEthereumNetwork,
@@ -182,5 +182,5 @@ export const CommonsConfig: ICommonConfiguration = {
     rateStrategyVolatileOne,
     rateStrategyStableOne,
     rateStrategyStableTwo,
-  },
+  }
 };

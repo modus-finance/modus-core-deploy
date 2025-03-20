@@ -1,6 +1,6 @@
 {
-  "name": "@aave/deploy-v3",
-  "version": "1.56.2",
+  "name": "@modus-finance/deploy-v3",
+  "version": "1.47.9",
   "files": [
     "dist",
     "helpers",
@@ -20,8 +20,8 @@
   "main": "dist/helpers/index.js",
   "devDependencies": {
     "@aave/aave-token": "^1.0.4",
-    "@aave/core-v3": "^1.19.3",
-    "@aave/periphery-v3": "^2.5.2",
+    "@modus-finance/core-v3": "^1.0.0",
+    "@modus-finance/periphery-v3": "^1.0.0",
     "@aave/safety-module": "^1.0.3",
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.5",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.0",
@@ -54,7 +54,7 @@
     "run-env": "npm ci && tail -f /dev/null",
     "cp-typechain": "cp typechain/*.d.ts ./dist/types/typechain",
     "build": "tsc --project lib.tsconfig.json && npm run cp-typechain",
-    "clean": "rm -rf artifacts/ types/ dist/ typechain/",
+    "clean": "rm -rf artifacts/ types/ dist/ typechain/ cache/",
     "compile": "SKIP_LOAD=true npx hardhat compile",
     "prepublish": "npm run clean && npm run compile && npm run build",
     "node": "npx hardhat node --no-deploy",
@@ -66,12 +66,13 @@
     "deploy:market:eth:empty:fork": "FORK=main MARKET_NAME=Ethereum npm run deploy"
   },
   "peerDependencies": {
-    "@aave/core-v3": "x || >=1.0.0-beta || >=3.0.0-beta",
-    "@aave/periphery-v3": "x || >=1.0.0-beta || >=3.0.0-beta",
+    "@modus-finance/core-v3": "x || >=1.0.0-beta || >=3.0.0-beta",
+    "@modus-finance/periphery-v3": "x || >=1.0.0-beta || >=3.0.0-beta",
     "hardhat": "^2.6.1"
   },
   "publishConfig": {
-    "registry": " https://registry.npmjs.org"
+    "registry": " https://registry.npmjs.org",
+    "access": "public"
   },
   "repository": {
     "type": "git",

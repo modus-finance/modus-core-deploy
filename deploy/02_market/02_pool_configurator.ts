@@ -7,10 +7,12 @@ import {
   RESERVES_SETUP_HELPER_ID,
 } from "../../helpers/deploy-ids";
 import { getPoolConfiguratorProxy, waitForTx } from "../../helpers";
+import { verify } from "../../helpers/verify";
 
 const func: DeployFunction = async function ({
   getNamedAccounts,
   deployments,
+  ...hre
 }: HardhatRuntimeEnvironment) {
   const { deploy, get } = deployments;
   const { deployer } = await getNamedAccounts();
@@ -29,17 +31,19 @@ const func: DeployFunction = async function ({
     },
     ...COMMON_DEPLOY_PARAMS,
   });
+  await verify(poolConfigArtifact.address,[], hre.network.name);
 
   // Initialize implementation
   const poolConfig = await getPoolConfiguratorProxy(poolConfigArtifact.address);
   await waitForTx(await poolConfig.initialize(addressesProviderAddress));
   console.log("Initialized PoolConfigurator Implementation");
 
-  await deploy(RESERVES_SETUP_HELPER_ID, {
+  const reserveHelper = await deploy(RESERVES_SETUP_HELPER_ID, {
     from: deployer,
     args: [],
     contract: "ReservesSetupHelper",
   });
+  await verify(reserveHelper.address,[], hre.network.name);
 
   return true;
 };
